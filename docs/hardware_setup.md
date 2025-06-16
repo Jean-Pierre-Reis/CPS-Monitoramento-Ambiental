@@ -4,31 +4,33 @@ Aqui está o esquema completo para conectar os sensores ao NodeMCU ESP32, inclui
 
 ```mermaid
 graph LR
-    subgraph NodeMCU ESP32
+    subgraph "NodeMCU ESP32"
         USB[Porta USB] --> |5V| REG[Regulador AMS1117-3.3V]
         REG --> |3.3V| VCC[VCC 3.3V]
         BAT[Bateria Li-Po 3.7V] --> |Vin| REG
-        GND[GND] --> |Terra| ALL
+        GND[GND] --> |Terra| USB
+        GND --> |Terra| REG
+        GND --> |Terra| BAT
     end
 
-    subgraph Sensor DHT11
-        VCC --> DHT[Pino 1 - VCC]
-        GND --> DHT[Pino 4 - GND]
-        DHT[Pino 2 - Dados] --> |4.7KΩ pull-up| VCC
-        DHT --> GPIO4[GPIO4 - D4]
+    subgraph "Sensor DHT11"
+        VCC --> DHT_VCC[Pino 1 - VCC]
+        GND --> DHT_GND[Pino 4 - GND]
+        DHT_DATA[Pino 2 - Dados] --> |4.7KΩ pull-up| VCC
+        DHT_DATA --> GPIO4[GPIO4 - D4]
     end
 
-    subgraph Sensor GP2Y1010AU0F (Poeira)
+    subgraph "Sensor GP2Y1010AU0F"
         VCC --> |150Ω| LED[LED IR]
         LED --> GPIO5[GPIO5 - D5]
-        SENSOR[Pino 5 - VCC] --> VCC
-        SENSOR[Pino 6 - Vo] --> |Filtro RC| ADC[ADC - GPIO6 - D6]
-        SENSOR[Pino 3 - GND] --> GND
+        SENSOR_VCC[Pino 5 - VCC] --> VCC
+        SENSOR_Vo[Pino 6 - Vo] --> |Filtro RC| ADC[ADC - GPIO6 - D6]
+        SENSOR_GND[Pino 3 - GND] --> GND
         ADC --> |1kΩ| CAP[220μF]
         CAP --> GND
     end
 
-    subgraph Proteções
+    subgraph "Proteções"
         GPIO4 --> |TVS Diode| GND
         GPIO5 --> |TVS Diode| GND
         ADC --> |TVS Diode| GND
